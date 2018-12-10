@@ -23,12 +23,14 @@ class PlayPauseButton(context: Context, attrs: AttributeSet): AppCompatImageButt
         background = null
     }
 
-    fun statePlay() {
+    fun play() {
+        if(state == STATE_PLAY) return
         state = STATE_PLAY
         setImageState(allStates[0], true)
     }
 
-    fun statePause() {
+    fun pause() {
+        if(state == STATE_PAUSE) return
         state = STATE_PAUSE
         setImageState(allStates[1], true)
     }

@@ -22,6 +22,7 @@ class MediaNotificationWrapper(val context: Context) {
     val notificationManager: NotificationManager
     private val playAction: NotificationCompat.Action
     private val pauseAction: NotificationCompat.Action
+    private var isPlaying = false
 
     init {
         notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -43,7 +44,8 @@ class MediaNotificationWrapper(val context: Context) {
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
     }
 
-    fun notification(pause: Boolean): Notification {
+    fun notification(isPlaying: Boolean): Notification {
+        this.isPlaying = isPlaying
         setupNotificationChannel()
         val stopServicePendingIntent = buildPendingIntent(PlayerService.STOP_COMMAND)
         val builder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
@@ -61,7 +63,7 @@ class MediaNotificationWrapper(val context: Context) {
             setSmallIcon(R.drawable.ic_music_note)
             color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
 
-            addAction(if(pause) pauseAction else playAction)
+            addAction(if(isPlaying) pauseAction else playAction)
 
             setStyle(android.support.v4.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0)
@@ -70,6 +72,8 @@ class MediaNotificationWrapper(val context: Context) {
         }
         return builder.build()
     }
+
+    fun autoNotification() = notification(isPlaying)
 
     private fun setupNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
