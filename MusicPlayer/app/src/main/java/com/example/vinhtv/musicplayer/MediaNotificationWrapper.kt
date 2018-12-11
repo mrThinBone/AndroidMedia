@@ -69,11 +69,50 @@ class MediaNotificationWrapper(val context: Context) {
                 .setShowActionsInCompactView(0)
             )
 
+            setOnlyAlertOnce(true)
+            setSound(null)
+            setDefaults(0)
+
         }
         return builder.build()
     }
 
-    fun autoNotification() = notification(isPlaying)
+    fun bufferingNotification(): Notification {
+        setupNotificationChannel()
+        val stopServicePendingIntent = buildPendingIntent(PlayerService.STOP_COMMAND)
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
+            setContentTitle("Forest Whitaker")
+            setContentText("Bad Books")
+            setSubText("buffering...")
+            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.bad_book))
+
+            setContentIntent(activityIntent())
+
+            setDeleteIntent(stopServicePendingIntent)
+
+            setVisibility(VISIBILITY_PUBLIC)
+
+            setSmallIcon(R.drawable.ic_music_note)
+            color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+
+            addAction(NotificationCompat.Action(R.drawable.vd_playpausestop_play, "play", null))
+
+            setStyle(android.support.v4.media.app.NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0)
+            )
+
+            setOnlyAlertOnce(true)
+            setSound(null)
+            setDefaults(0)
+
+        }
+        return builder.build()
+    }
+
+    fun autoNotification(playerReady: Boolean): Notification {
+        return if(playerReady) notification(isPlaying)
+        else bufferingNotification()
+    }
 
     private fun setupNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

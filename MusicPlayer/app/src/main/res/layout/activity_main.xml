@@ -17,8 +17,8 @@
         style="@style/Widget.AppCompat.SeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="3"
+        android:max="100"
+        android:progress="0"
         android:layout_margin="20dp"
         android:layout_gravity="bottom"/>
 </FrameLayout>
